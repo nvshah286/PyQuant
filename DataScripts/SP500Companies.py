@@ -17,7 +17,8 @@ for x in rows:
     cells = [x.text_content() for x in cells]
     cellsAr.append(cells)
 df = pd.DataFrame(cellsAr)
-df.columns =['Symbol', 'Security','SEC Filings','GICS Sector',' GICS Sub Industry', 'Location','Date Added','CIK','Founded']
+df.columns =['Symbol', 'Security','SEC Filings','GICS Sector',
+             ' GICS Sub Industry', 'Location','Date Added','CIK','Founded']
 
 listDF = df.loc[:,['Symbol', 'Security','GICS Sector',' GICS Sub Industry', 'Location']]
 listDF.to_csv("DataFiles/SP500Symbols.csv")
