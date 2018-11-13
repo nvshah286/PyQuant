@@ -7,12 +7,12 @@ def getStockData(symbols=None, startDate=None, endDate=None, fileName=None, valu
     filePath = 'DataFiles/' + fileName + '.csv'
     if os.path.isfile(filePath):
         stockData = pd.read_csv(filePath)
-        stockData.set_index('Date', inplace=True,drop= True)
-        stockData.index = pd.to_datetime(stockData.index)
+        # stockData.set_index('Date', inplace=True,drop= True)
+        # stockData.index = pd.to_datetime(stockData.index)
         return stockData
     else:
         if symbols == None:
-            listDF = pd.read_csv('DataFiles/SP500Symbols.csv',index_col='Date')
+            listDF = pd.read_csv('DataFiles/SP500Symbols.csv')
             symbols = listDF.Symbol
 
         stockData = pd.DataFrame()
