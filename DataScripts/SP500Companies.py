@@ -21,4 +21,4 @@ df.columns =['Symbol', 'Security','SEC Filings','GICS Sector',
              ' GICS Sub Industry', 'Location','Date Added','CIK','Founded']
 
 listDF = df.loc[:,['Symbol', 'Security','GICS Sector',' GICS Sub Industry', 'Location']]
-listDF.to_csv("DataFiles/SP500Symbols.csv")
+listDF.to_csv("DataFiles/SP500Companies.csv")
