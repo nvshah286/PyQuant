@@ -30,11 +30,17 @@ def getStockData(symbols=None, startDate=None, endDate=None, fileName=None, valu
 def getTickers(index='SP500', sector='Information Technology'):
     if index == 'SP500':
         companies = pd.read_csv('DataFiles/SP500Companies.csv')
-        symbols = companies[companies['GICS Sector'] == sector].Symbol
+        if sector is None:
+            symbols = companies.Symbol
+        else:
+            symbols = companies[companies['GICS Sector'] == sector].Symbol
         return symbols
     elif index == 'R3000':
         companies = pd.read_csv('DataFiles/R3000Companies.csv')
-        symbols = companies[companies['Sector'] == sector].Ticker
+        if sector is None:
+            symbols = companies.Ticker
+        else:
+            symbols = companies[companies['Sector'] == sector].Ticker
         return symbols
     else:
         exit('Index can be either SP500 or R3000 !')
