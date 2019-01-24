@@ -9,7 +9,8 @@ class BackTest:
         self.func = func
         self.args = arguments
         self.holdingPeriod = holdingPeriod
-        self.testData = stockData.iloc[: -40, ]
+        self.testData = stockData.iloc[: (holdingPeriod * -4), ]
+        self.allData = stockData
 
     def buyPoints(self):
         buyPts = self.testData.apply(func=self.func, args=self.args, axis=0)
@@ -20,28 +21,28 @@ class BackTest:
         tradeCounts = buyPts.apply(sum, axis=0)
         return tradeCounts
 
-    def calcReturns(self, series=None, entryPoints=None):
-        entryPoints.reset_index(drop=True, inplace=True)
+    def calcReturns(self, s=None, stockData=None, buyPoints=None):
+        print(s)
+        series = stockData[s]
         series.reset_index(drop=True, inplace=True)
+        entryPoints = buyPoints[s]
+        entryPoints.reset_index(drop=True, inplace=True)
         entryTime = entryPoints.index[entryPoints]
         exitVal = series[entryTime + self.holdingPeriod]
         entryVal = series[entryTime]
-        return 100 * (exitVal.values / entryVal.values - 1)
+        return list(100 * (exitVal.values / entryVal.values - 1))
 
     def retSeries(self):
-        aggSeries = []
-        for s in self.testData.columns:
-            returns = self.calcReturns(series=self.testData[s],
-                                       entryPoints=self.buyPoints()[s])
-            aggSeries.append(returns)
-        aggSeries = pd.Series(aggSeries)
-        aggSeries.index = self.testData.columns
+        symbols = pd.Series(self.allData.columns)
+        buyPoints = self.buyPoints()
+        aggSeries = symbols.apply(self.calcReturns, args=(self.allData, buyPoints))
+        aggSeries.index = symbols
         return aggSeries
 
     def summary(self):
-        allSeries = pd.Series()
+        allSeries = []
         for s in self.retSeries():
-            allSeries = pd.concat([allSeries, pd.Series(s)], axis=0)
+            allSeries += s;
         allSeries = pd.Series(allSeries)
         posNeg = allSeries >= 0
         df = pd.DataFrame({'Returns': allSeries, 'PosNeg': posNeg})
@@ -59,3 +60,6 @@ class BackTest:
                    'AvgTrades': avgTrades
                    }
         return pd.Series(summary)
+
+# write a function to read the backtest and chart for individual stocks
+# stock chart vs moving averages & showing entry exit points or somehting.

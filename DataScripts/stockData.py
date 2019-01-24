@@ -7,15 +7,13 @@ import os.path
 def getStockData(symbols=None, startDate=None, endDate=None, fileName=None, value='Adj Close'):
     filePath = 'DataFiles/' + fileName + '.csv'
     if os.path.isfile(filePath):
+        print('File already exists so loading from the data')
         stockData = pd.read_csv(filePath)
         # stockData.set_index('Date', inplace=True,drop= True)
         # stockData.index = pd.to_datetime(stockData.index)
         return stockData
     else:
-        if symbols == None:
-            listDF = pd.read_csv('DataFiles/SP500Companies.csv')
-            symbols = listDF.Symbol
-
+        print('Creating new File with the symbols provided')
         stockData = pd.DataFrame()
         for s in symbols:
             stocks = pdr.get_data_yahoo(s, startDate, endDate)[value]
@@ -44,3 +42,10 @@ def getTickers(index='SP500', sector='Information Technology'):
         return symbols
     else:
         exit('Index can be either SP500 or R3000 !')
+
+
+## script for pulling data
+startDate = datetime.datetime(2013, 1, 1)
+endDate = datetime.datetime(2018, 10, 31)
+techTickers = getTickers('R3000', 'Information Technology')
+techData = getStockData(techTickers, startDate=startDate, endDate=endDate, fileName='techR3000', value='Adj Close')
