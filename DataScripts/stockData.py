@@ -2,26 +2,24 @@ import pandas as pd
 import pandas_datareader as pdr
 import datetime
 import os.path
+import pickle
 
 
-def getStockData(symbols=None, startDate=None, endDate=None, fileName=None, value='Adj Close'):
-    filePath = 'DataFiles/' + fileName + '.csv'
-    if os.path.isfile(filePath):
+def getIndexData(symbols=None, startDate=None, endDate=None, fileName=None, update=True):
+    filePath = 'DataFiles/' + fileName + '.pickle'
+    if os.path.isfile(filePath) and not update:
         print('File already exists so loading from the data')
-        stockData = pd.read_csv(filePath)
-        # stockData.set_index('Date', inplace=True,drop= True)
-        # stockData.index = pd.to_datetime(stockData.index)
+        with open(filePath, 'rb') as f:
+            stockData = pickle.load(f)
         return stockData
     else:
         print('Creating new File with the symbols provided')
-        stockData = pd.DataFrame()
+        stockData = dict()
         for s in symbols:
-            stocks = pdr.get_data_yahoo(s, startDate, endDate)[value]
-            stockData = pd.concat([stockData, stocks], axis=1)
+            stockData[s] = pdr.get_data_yahoo(s, startDate, endDate)
             print(s)
-
-        stockData.columns = symbols[:stockData.shape[1]]
-        stockData.to_csv(filePath)
+        with open(filePath, 'wb') as f:
+            pickle.dump(stockData, f, pickle.HIGHEST_PROTOCOL)
         return stockData
 
 
@@ -42,10 +40,3 @@ def getTickers(index='SP500', sector='Information Technology'):
         return symbols
     else:
         exit('Index can be either SP500 or R3000 !')
-
-
-## script for pulling data
-startDate = datetime.datetime(2013, 1, 1)
-endDate = datetime.datetime(2018, 10, 31)
-techTickers = getTickers('R3000', 'Information Technology')
-techData = getStockData(techTickers, startDate=startDate, endDate=endDate, fileName='techR3000', value='Adj Close')
