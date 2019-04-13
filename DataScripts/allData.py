@@ -4,4 +4,4 @@ from DataScripts import stockData
 tickers = stockData.getTickers('R3000')
 
 # get data for those tickers
-r3000Data = stockData.getIndexData(symbols=tickers, fileName='R3000')
+r3000Data = stockData.getIndexData(fileName='R3000Data', update=False)
