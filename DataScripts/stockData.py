@@ -16,8 +16,11 @@ def getIndexData(symbols=None, startDate=None, endDate=None, fileName=None, upda
         print('Creating new File with the symbols provided')
         stockData = dict()
         for s in symbols:
-            stockData[s] = pdr.get_data_yahoo(s, startDate, endDate)
-            print(s)
+            try:
+                print(s)
+                stockData[s] = pdr.get_data_yahoo(s, startDate, endDate)
+            except:
+                print('Error in fetching data for ',s)
         with open(filePath, 'wb') as f:
             pickle.dump(stockData, f, pickle.HIGHEST_PROTOCOL)
         return stockData

@@ -49,7 +49,6 @@ class BackTest:
         aggSeries = dict()
         errorCount = 0
         for s in symbols:
-            print('The symbol is :', s)
             try:
                 aggSeries[s] = self.calcReturns(s=s, buyPoints=buyPoints)
             except:

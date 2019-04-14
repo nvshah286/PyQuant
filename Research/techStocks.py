@@ -27,22 +27,3 @@ bkResult = Backtest.BackTest(func=MovingAverages.movingAverages,
 
 buyPts = bkResult.buyPoints()
 
-
-def calcReturns(symbol=None, stockData=None, buyPoints=None):
-    print(len(symbol))
-    series = stockData[symbol]
-    entryPoints = buyPoints[symbol]
-    entryPoints.reset_index(drop=True, inplace=True)
-    series.reset_index(drop=True, inplace=True)
-    entryTime = entryPoints.index[entryPoints]
-    exitVal = series[entryTime + 5]
-    entryVal = series[entryTime]
-    return list(100 * (exitVal.values / entryVal.values - 1))
-
-
-def retSeries(symbols=None):
-    testData = stockData
-    buyPts = bkResult.buyPoints()
-    aggSeries = symbols.apply(calcReturns, args=(testData, buyPoints))
-    aggSeries.index = symbols
-    return aggSeries
