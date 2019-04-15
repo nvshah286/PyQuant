@@ -24,7 +24,10 @@ class BackTest:
         symbols = list(self.allData.keys())
         for s in symbols:
             priceData = self.allData[s].iloc[: (self.holdingPeriod * -4), ]
-            buyPts[s] = self.func(priceData, *self.args)
+            if self.args == None:
+                buyPts[s] = self.func(priceData)
+            else:
+                buyPts[s] = self.func(priceData, *self.args)
 
         buyPts = pd.DataFrame(buyPts)
         buyPts.fillna(value=False, inplace=True)
