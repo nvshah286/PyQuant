@@ -4,16 +4,22 @@ import pandas as pd
 
 # creating backtest class.
 # one thing that is fixed is the function argument.. the first argument will always be 'series'
+
+# hiding some methods within the class right now
+# only methods visible are return series & summary at this point.
+
 class BackTest:
 
     def __init__(self, func=None, stockData=None, arguments=None, holdingPeriod=5):
         self.func = func
         self.args = arguments
         self.holdingPeriod = holdingPeriod
-        self.testData = stockData
         self.allData = stockData
+        self.buyPts = self.__buyPoints()
+        self.btReturns = self.retSeries()
 
-    def buyPoints(self):
+    # hiding the function at the point
+    def __buyPoints(self):
         buyPts = dict()
         symbols = list(self.allData.keys())
         for s in symbols:
@@ -24,12 +30,12 @@ class BackTest:
         buyPts.fillna(value=False, inplace=True)
         return buyPts
 
-    def tradeCounts(self):
-        buyPts = self.buyPoints()
-        tradeCounts = buyPts.apply(sum, axis=0)
-        return tradeCounts
+    def __tradeCounts(self):
+        buyPts = self.__buyPoints()
+        tradect = buyPts.apply(sum, axis=0)
+        return tradect
 
-    def calcReturns(self, s=None, buyPoints=None):
+    def __calcReturns(self, s=None, buyPoints=None):
         series = self.allData[s]['Adj Close']
         series.reset_index(drop=True, inplace=True)
         entryPoints = buyPoints[s]
@@ -45,12 +51,12 @@ class BackTest:
 
     def retSeries(self):
         symbols = list(self.allData.keys())
-        buyPoints = self.buyPoints()
+        buyPoints = self.__buyPoints()
         aggSeries = dict()
         errorCount = 0
         for s in symbols:
             try:
-                aggSeries[s] = self.calcReturns(s=s, buyPoints=buyPoints)
+                aggSeries[s] = self.__calcReturns(s=s, buyPoints=buyPoints)
             except:
                 errorCount += 1
         # TODO: put this data in long data format frame.
@@ -58,9 +64,12 @@ class BackTest:
         print('Total securities with erros is : ', errorCount)
         return aggSeries
 
+    def retSeriesFormatter(self):
+        return None
+
     def summary(self):
         allSeries = []
-        retData = self.retSeries()
+        retData = self.btReturns
         for s in retData:
             allSeries.extend(retData[s])
         allSeries = pd.Series(allSeries)
@@ -71,7 +80,7 @@ class BackTest:
         avgPosReturn = round(summaryDF.loc[True, 'mean'], ndigits=4)
         avgNegReturn = round(summaryDF.loc[False, 'mean'], ndigits=4)
         avgRetOverall = round(np.nanmean(df.Returns), ndigits=4)
-        avgTrades = round(sum(self.tradeCounts()) / len(self.testData), ndigits=3)
+        avgTrades = round(sum(self.__tradeCounts()) / len(self.allData), ndigits=3)
 
         summary = {'AvgReturn': avgRetOverall,
                    'AvgPositiveReturn': avgPosReturn,

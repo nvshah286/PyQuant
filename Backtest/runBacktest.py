@@ -7,14 +7,14 @@ from DataScripts import stockData
 tickers = stockData.getTickers('SP500')
 
 # get data for those tickers
-btData = stockData.getIndexData(symbols = tickers,fileName='SP500Data', update=True)
+btData = stockData.getIndexData(fileName='SP500Data', update=False)
 
 summary = pd.DataFrame()
 # generating the backtest object
 
 bk1 = Backtest.BackTest(func=MovingAverages.movingAverages,
                         stockData=btData,
-                        arguments=(5,10),
+                        arguments=(10,20),
                         holdingPeriod=5)
 s1 = bk1.summary()
 
