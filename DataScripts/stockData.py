@@ -26,7 +26,7 @@ def getIndexData(symbols=None, startDate=None, endDate=None, fileName=None, upda
         return stockData
 
 
-def getTickers(index='SP500', sector='Information Technology'):
+def getTickers(index='SP500', sector= None):
     if index == 'SP500':
         companies = pd.read_csv('DataFiles/SP500Companies.csv')
         if sector is None:
