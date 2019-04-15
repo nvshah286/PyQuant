@@ -93,5 +93,3 @@ class BackTest:
                    }
         return pd.Series(summary)
 
-# write a function to read the backtest and chart for individual stocks
-# stock chart vs moving averages & showing entry exit points or somehting.
