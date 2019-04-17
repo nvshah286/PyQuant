@@ -50,6 +50,6 @@ retDF.dropna(inplace=True)
 sp500metadata = pd.read_csv('DataFiles/SP500Companies.csv')[['Symbol', 'GICS Sector', 'GICS Sub Industry']]
 
 allData = pd.merge(retDF, sp500metadata, on='Symbol')
-allData.columns = ['RetSeries', 'Symbol', 'GICS_Sector', 'GICS_SubIndustry']
+allData.columns = ['Symbol', 'Returns', 'GICS_Sector', 'GICS_SubIndustry']
 
 allData.to_csv('LowBollingerSP500Results.csv')
